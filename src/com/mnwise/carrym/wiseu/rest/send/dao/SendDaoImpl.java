@@ -25,6 +25,11 @@ public class SendDaoImpl extends SqlMapClientDaoSupport implements SendDao {
 	public void insertNvrealtimeAccept(NvRealtimeAccept nvrealtimeaccept) {
 		getSqlMapClientTemplate().insert(namespace + "insertNvrealtimeAccept", nvrealtimeaccept);
 	}
+
+	@Override
+	public int selectNvrealtimeacceptCount(NvRealtimeAccept nvrealtimeaccept) {
+		return (int) getSqlMapClientTemplate().queryForObject(namespace + "selectNvrealtimeacceptCount", nvrealtimeaccept);
+	}
 	
 	
 

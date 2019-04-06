@@ -22,6 +22,14 @@ public class SendServiceImpl implements SendService {
 		logger.info("SERVICE");
 		sendDao.insertNvrealtimeAccept(nvrealtimeaccept);
 	}
+
+	@Override
+	public boolean isDuplicateSeq(NvRealtimeAccept nvrealtimeaccept) {
+		if(sendDao.selectNvrealtimeacceptCount(nvrealtimeaccept) > 0) {
+			return true;
+		}
+		return false;
+	}
 	
 	
 	

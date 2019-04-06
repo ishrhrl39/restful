@@ -56,17 +56,24 @@ public class MailController extends CarrymController{
 		jsonObject.addProperty("HTML", html);	// JONMUN add html
 		
 		NvRealtimeAccept nvrealtimeaccept = RequestParamUtil.jsonToNvrealtimeacceptVo(json);
+		nvrealtimeaccept.setREQ_USER_ID(userVo.getID());
 		nvrealtimeaccept.setJONMUN(gson.toJson(jsonObject));
+		nvrealtimeaccept.setCHANNEL("M");
+		nvrealtimeaccept.setFILE_PATH1(JsonUtil.defaultFieldValue(JsonUtil.stringToJsonElement(json), "FILE1"));
+		nvrealtimeaccept.setFILE_PATH2(JsonUtil.defaultFieldValue(JsonUtil.stringToJsonElement(json), "FILE2"));
+		nvrealtimeaccept.setFILE_PATH3(JsonUtil.defaultFieldValue(JsonUtil.stringToJsonElement(json), "FILE3"));
 		
 		Map result = isVoColumnVal(nvrealtimeaccept, "SEQ", "RECEIVER_NM", "RECEIVER", "SENDER_NM", "SENDER", "SUBJECT", "JONMUN");
 		boolean isColumnVal = Boolean.parseBoolean(result.get("result").toString());
 		logger.info("accept column valid check = " + isColumnVal);
-		if(!isColumnVal){
+		if(!isColumnVal){	// 컬럼 유효성 체크
 			return ResultDto.getMessage(Constants.Result.NO_VALUE, result.get("columnNm").toString());
 		}
+		if(sendService.isDuplicateSeq(nvrealtimeaccept)) {		// SEQ 중복체크
+			return ResultDto.getMessage(Constants.Result.DUPL_SEQ);
+		}
 		
-		logger.info(nvrealtimeaccept.getCHANNEL());
-//		sendService.insertNvrealtimeAccept(nvrealtimeaccept);
+		sendService.insertNvrealtimeAccept(nvrealtimeaccept);
 		
 		return ResultDto.getMessage(Constants.Result.SUCCESS);
 	}
