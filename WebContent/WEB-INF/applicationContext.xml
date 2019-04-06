@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+	">
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/**" />
+			<bean id="interceptor" class="com.mnwise.carrym.wiseu.rest.interceptor.Interceptor">
+				<property name="restUserService" ref="restUserService" />
+				<property name="messageSourceAccessor" ref="messageSourceAccessor" />
+			</bean>
+		</mvc:interceptor>
+	</mvc:interceptors>
+	
+	<bean id="restUserService" class="com.mnwise.carrym.wiseu.rest.send.service.RestUserServiceImpl">
+		<property name="restUserDao" ref="restUserDao" />
+	</bean>
+	<bean id="restUserDao" class="com.mnwise.carrym.wiseu.rest.send.dao.RestUserDaoImpl">
+		<constructor-arg>
+			<ref bean="sqlMapClient"/>
+		</constructor-arg>
+	</bean>
+
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	    <property name="location" value="/WEB-INF/conf/jdbc.properties"/>
+        <property name="fileEncoding" value="UTF-8" />
+	</bean>
+
+	
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="${jdbc.driverClassName}"></property>
+		<property name="url" value="${jdbc.url}"></property>
+		<property name="username" value="${jdbc.username}"></property>
+		<property name="password" value="${jdbc.password}"></property>
+	</bean>
+	
+	<bean id="sqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="configLocation" value="WEB-INF/sql-map-config.xml"></property>
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	
+	<bean id="sqlMapClientTemplate" class="org.springframework.orm.ibatis.SqlMapClientTemplate">
+		<property name="sqlMapClient" ref="sqlMapClient"></property>
+	</bean>
+	
+	
+	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <property name="basenames">
+            <list>
+                <value>/WEB-INF/messages/result_message</value>
+            </list>
+        </property>
+        <property name="cacheSeconds" value="5"/>
+    </bean>
+
+    <bean id="messageSourceAccessor" class="org.springframework.context.support.MessageSourceAccessor">
+        <constructor-arg>
+            <ref local="messageSource" />
+        </constructor-arg>
+    </bean>
+	
+	<bean id="localeResolver"
+		class="org.springframework.web.servlet.i18n.SessionLocaleResolver">
+		<property name="defaultLocale" value="ko">
+		</property>
+	</bean>
+	
+	<bean id="resultDto" class="com.mnwise.carrym.wiseu.rest.util.ResultDto">
+		<property name="messageSourceAccessor" ref="messageSourceAccessor"/>
+	</bean>
+</beans>

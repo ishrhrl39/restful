@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="SqlMapRestUser">
+	
+	<typeAlias alias="NvRestUser" type="com.mnwise.carrym.wiseu.rest.send.model.NvRestUser"/>
+
+	<select id="selectRestUser" parameterClass="NvRestUser" resultClass="NvRestUser" >
+		SELECT 
+			ID
+			,NAME
+			,REG_DTM
+			,USE_YN
+		FROM
+			NVRESTUSER
+		WHERE
+			ID = #ID#
+			AND PASSWORD = #PASSWORD#
+	</select>
+	
+</sqlMap>
