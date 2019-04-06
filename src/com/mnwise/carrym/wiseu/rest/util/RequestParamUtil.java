@@ -7,9 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
-import com.mnwise.carrym.wiseu.rest.send.controller.MailController;
 import com.mnwise.carrym.wiseu.rest.send.model.NvRealtimeAccept;
 
 public class RequestParamUtil {
@@ -17,14 +14,19 @@ public class RequestParamUtil {
 	static Logger logger = Logger.getLogger(RequestParamUtil.class);
 	
 	/**
-	 * Request -> Json -> Vo
+	 * String -> VO
 	 * @param request
 	 * @return
 	 */
-	public static NvRealtimeAccept requestToVo(HttpServletRequest request) {
+	public static NvRealtimeAccept jsonToNvrealtimeacceptVo(String json) {
+		Gson gson = new Gson();
+	    NvRealtimeAccept nvrealtimeAccept = gson.fromJson(json, NvRealtimeAccept.class);
+	    return nvrealtimeAccept;
+	}
+	
+	public static String getJsonString(HttpServletRequest request) {
 		StringBuffer json = new StringBuffer();
 	    String line = null;
-	    Gson gson = new Gson();
 	 
 	    try {
 	        BufferedReader reader = request.getReader();
@@ -34,9 +36,7 @@ public class RequestParamUtil {
 	    }catch(Exception e) {
 	        e.printStackTrace();
 	    }
-
-	    NvRealtimeAccept nvrealtimeAccept = gson.fromJson(json.toString(), NvRealtimeAccept.class);
-	    return nvrealtimeAccept;
+	    return json.toString();
 	}
 	
 }
