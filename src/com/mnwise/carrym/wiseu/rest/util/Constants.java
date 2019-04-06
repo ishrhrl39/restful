@@ -10,5 +10,6 @@ public class Constants {
 	public static class Result{
 		public static final String SUCCESS = "000";	// 성공
 		public static final String NO_USER = "600";	// 유저없음
+		public static final String NO_VALUE = "500"; // 컬럼값 없음
 	}
 }
