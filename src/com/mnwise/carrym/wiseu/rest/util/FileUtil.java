@@ -16,4 +16,17 @@ public class FileUtil {
 		}
 		return false;
 	}
+	
+
+	/**
+	 * 파일 존재 여부 체크
+	 * @param path
+	 * @return bool (true: 생성완료, false: 생성 미진행)
+	 */
+	public static boolean isFileExist(String path) {
+		return new File(path).exists();
+	}
+	
+	
+	
 }
