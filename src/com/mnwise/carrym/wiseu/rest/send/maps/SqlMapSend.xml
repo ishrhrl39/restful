@@ -39,10 +39,9 @@
 			<isEqual property="CHANNEL" compareValue="M">
 				,'M'
 			</isEqual>
-			<isEqual property="CHANNEL" compareValue="SM">
-				,'M'
-			</isEqual>
-			,#CHANNEL#
+			<isNotEqual property="CHANNEL" compareValue="M">
+				,#CHANNEL#
+			</isNotEqual>
 			,#REQ_USER_ID#
 			,DATE_FORMAT(NOW(), '%Y%m%d')
 			,DATE_FORMAT(NOW(), '%H%i%s')
