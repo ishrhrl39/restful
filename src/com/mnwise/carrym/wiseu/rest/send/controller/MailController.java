@@ -59,8 +59,9 @@ public class MailController extends CarrymController{
 		JsonObject jsonObject = new JsonObject();
 		
 		String json = RequestParamUtil.getJsonString(request);   // request -> jsonString
-		String html = JsonUtil.defaultFieldValue(JsonUtil.stringToJsonElement(json), "HTML");	// HTML FIELD
+		//  {	"SEQ" : 12312344456411112311,	"RECEIVER_NM" : "예나",	"RECEIVER" : "Hanyena1134@mnwise.com",	"SENDER_NM" : "한예나",	"SENDER" : "예나2",	"SECU_KEY" : "941128",	"SUBJECT" : "제목입니다",	"HTML" : "ddddddd",	"FILE1" : "20190420145302"	}
 		
+		String html = JsonUtil.defaultFieldValue(JsonUtil.stringToJsonElement(json), "HTML");	// HTML FIELD
 		if(StringUtil.isEmpty(html))	// html is empty
 			return ResultDto.getMessage(Constants.Result.NO_VALUE, "HTML");
 		
@@ -71,26 +72,28 @@ public class MailController extends CarrymController{
 		nvrealtimeaccept.setJONMUN(gson.toJson(jsonObject));
 		nvrealtimeaccept.setCHANNEL("M");
 		
-//		nvrealtimeaccept.setFILE_PATH1(JsonUtil.defaultFieldValue(JsonUtil.stringToJsonElement(json), "FILE1"));
-//		nvrealtimeaccept.setFILE_PATH2(JsonUtil.defaultFieldValue(JsonUtil.stringToJsonElement(json), "FILE2"));
-//		nvrealtimeaccept.setFILE_PATH3(JsonUtil.defaultFieldValue(JsonUtil.stringToJsonElement(json), "FILE3"));
-		
-		Map result = isVoColumnVal(nvrealtimeaccept, "SEQ", "RECEIVER_NM", "RECEIVER", "SENDER_NM", "SENDER", "SUBJECT", "JONMUN");
-		boolean isColumnVal = Boolean.parseBoolean(result.get("result").toString());
-		logger.info("accept column valid check = " + isColumnVal);
-		if(!isColumnVal){	// 컬럼 유효성 체크
-			return ResultDto.getMessage(Constants.Result.NO_VALUE, result.get("columnNm").toString());
+		// 첨부파일 존재 여부 파악 및 삽입
+		String isAttachFile = nvFileAttach(userVo.getID(), nvrealtimeaccept, json);
+		if(isAttachFile.equals(Constants.Result.NOFILE_DB)) {
+			return ResultDto.getMessage(Constants.Result.NOFILE_DB);
+		}else if(isAttachFile.equals(Constants.Result.NOFILE_PATH)){
+			return ResultDto.getMessage(Constants.Result.NOFILE_PATH);
+		}else {
+			Map result = isVoColumnVal(nvrealtimeaccept, "SEQ", "RECEIVER_NM", "RECEIVER", "SENDER_NM", "SENDER", "SUBJECT", "JONMUN");
+			boolean isColumnVal = Boolean.parseBoolean(result.get("result").toString());
+			logger.info("accept column valid check = " + isColumnVal);
+			if(!isColumnVal){	// 컬럼 유효성 체크
+				return ResultDto.getMessage(Constants.Result.NO_VALUE, result.get("columnNm").toString());
+			}
+			if(sendService.isDuplicateSeq(nvrealtimeaccept)) {		// SEQ 중복체크
+				return ResultDto.getMessage(Constants.Result.DUPL_SEQ);
+			}
+			sendService.insertNvrealtimeAccept(nvrealtimeaccept);
+			
+			return ResultDto.getMessage(Constants.Result.SUCCESS);
 		}
-		if(sendService.isDuplicateSeq(nvrealtimeaccept)) {		// SEQ 중복체크
-			return ResultDto.getMessage(Constants.Result.DUPL_SEQ);
-		}
-		
-		sendService.insertNvrealtimeAccept(nvrealtimeaccept);
-		
-		return ResultDto.getMessage(Constants.Result.SUCCESS);
 	}
-	
-	
+
 	@RequestMapping("/smail")
 	public ModelAndView smail_send(HttpServletRequest request) throws Exception {
 		logger.info("send mail start()");
@@ -114,76 +117,66 @@ public class MailController extends CarrymController{
 		
 		NvRealtimeAccept nvrealtimeaccept = RequestParamUtil.jsonToNvrealtimeacceptVo(json);
 		nvrealtimeaccept.setJONMUN(gson.toJson(jsonObject));
-		nvrealtimeaccept.setCHANNEL("SM");
+		nvrealtimeaccept.setCHANNEL("M");
 		nvrealtimeaccept.setRECEIVER_ID(nvrealtimeaccept.getSEQ());
 		nvrealtimeaccept.setREQ_USER_ID(userVo.getID()); // 고객사 아이디
-//		nvrealtimeaccept.setFILE_PATH1(JsonUtil.defaultFieldValue(JsonUtil.stringToJsonElement(json), "FILE1"));
-//		nvrealtimeaccept.setFILE_PATH2(JsonUtil.defaultFieldValue(JsonUtil.stringToJsonElement(json), "FILE2"));
-//		nvrealtimeaccept.setFILE_PATH3(JsonUtil.defaultFieldValue(JsonUtil.stringToJsonElement(json), "FILE3"));
+
+
+		// 첨부파일 존재 여부 파악 및 삽입
+		String isAttachFile = nvFileAttach(userVo.getID(), nvrealtimeaccept, json);
+		if(isAttachFile.equals(Constants.Result.NOFILE_DB)) {
+			return ResultDto.getMessage(Constants.Result.NOFILE_DB);
+		}else if(isAttachFile.equals(Constants.Result.NOFILE_PATH)){
+			return ResultDto.getMessage(Constants.Result.NOFILE_PATH);
+		}else {
 		
-		Map result = isVoColumnVal(nvrealtimeaccept, "SEQ", "RECEIVER_NM", "RECEIVER", "SENDER_NM", "SENDER", "SECU_KEY", "SUBJECT", "JONMUN");
-		boolean isColumnVal = Boolean.parseBoolean(result.get("result").toString());
-		logger.info("accept column valid check = " + isColumnVal);
-		if(!isColumnVal){
-			return ResultDto.getMessage(Constants.Result.NO_VALUE, result.get("columnNm").toString());
+			Map result = isVoColumnVal(nvrealtimeaccept, "SEQ", "RECEIVER_NM", "RECEIVER", "SENDER_NM", "SENDER", "SECU_KEY", "SUBJECT", "JONMUN");
+			boolean isColumnVal = Boolean.parseBoolean(result.get("result").toString());
+			logger.info("accept column valid check = " + isColumnVal);
+			if(!isColumnVal){
+				return ResultDto.getMessage(Constants.Result.NO_VALUE, result.get("columnNm").toString());
+			}
+			if(sendService.isDuplicateSeq(nvrealtimeaccept)) {		// SEQ 중복체크
+				return ResultDto.getMessage(Constants.Result.DUPL_SEQ);
+			}
+			
+			sendService.insertNvrealtimeAccept(nvrealtimeaccept);
+			
+			return ResultDto.getMessage(Constants.Result.SUCCESS);
 		}
-		if(sendService.isDuplicateSeq(nvrealtimeaccept)) {		// SEQ 중복체크
-			return ResultDto.getMessage(Constants.Result.DUPL_SEQ);
-		}
-		
-		sendService.insertNvrealtimeAccept(nvrealtimeaccept);
-		
-		return ResultDto.getMessage(Constants.Result.SUCCESS);
 	}
 	
-	@RequestMapping("/file")
-	public ModelAndView file_send(HttpServletRequest request) throws Exception {
-		
-		SimpleDateFormat sdf =  new SimpleDateFormat("yyyyMMddHHmmss");
-		String nowDate = sdf.format(new Date());
-		NvRestUser userVo = (NvRestUser)request.getAttribute("userVo");
-		
-		AjaxFileUploadMultipartResolver resolver = new AjaxFileUploadMultipartResolver();
-        resolver.setMaxUploadSize(1024 * 1024 * 5);
-        MultipartHttpServletRequest multiPartRequest = null;
-        multiPartRequest = resolver.resolveMultipart(request);
 
-        MultipartFile file = multiPartRequest.getFile("file");
-        
-        // 파일 DB에저장
-        logger.info("login id => "  + userVo.getID());
-        NvRestFile nvRestFile = new NvRestFile();
-        nvRestFile.setID(userVo.getID());
-        nvRestFile.setFILE_ID(nowDate);
-        if(restFileService.selectRestFile(nvRestFile) != null) {
-        	String fileId = nvRestFile.getFILE_ID();
-        	String nextId = "";
-        	if(fileId.indexOf("_") > -1) {
-        		nextId = nowDate +"_" + (Integer.parseInt(fileId.substring(fileId.indexOf("_") + 1)) + 1);
-        	}else {
-        		nextId = nowDate +"_1";
-        	}
-        	nvRestFile.setFILE_ID(nextId);
-        }
-        
-        String reqDt = nowDate.substring(0,8);
-        String uploadPath = PropertiesListener.getPropertyValue("upload.Root.Path");
-        String fileNm = file.getOriginalFilename();
-        String relativePath = nvRestFile.getID() + "/" + reqDt + "/" + nvRestFile.getFILE_ID() + fileNm.substring(fileNm.lastIndexOf("."));
-        String fileFullPath = uploadPath + "/" + relativePath;
-        
-        // 업로드 + 회원ID 폴더
-        FileUtil.mkdir(uploadPath + "/" + nvRestFile.getID());
-        
-        // 업로드 + 회원ID 폴더 + 날짜
-        FileUtil.mkdir(uploadPath + "/" + nvRestFile.getID() + "/" + reqDt);
-        
-        nvRestFile.setFILE_NM(fileNm);
-        nvRestFile.setFILE_PATH(fileFullPath);
-        nvRestFile.setREG_DTM(nowDate);
-        
-        file.transferTo(new File(fileFullPath));
-        restFileService.insertRestFile(nvRestFile);
-		return ResultDto.getMessage(Constants.Result.SUCCESS, "FILE_ID", nvRestFile.getFILE_ID());
+	/**
+	 * 업로드 된 파일 존재 여부 파악 후 NvRealtimeAccept에 삽입
+	 * @param id 고객사 아이디
+	 * @param nvrealtimeaccept 파일 존재 시 FILE_PATH에 담음
+	 * @param json requset로 넘어온 인자 유효성 체크
+	 * @return
+	 */
+	private String nvFileAttach(String id, NvRealtimeAccept nvrealtimeaccept, String json) {
+		System.out.println("id ---> " + id);
+		// 고객별 파일 경로 담기
+		for(int i = 1; i <= 3; i++) {
+			 NvRestFile nvRestFile = new NvRestFile();
+			 nvRestFile.setFILE_ID(JsonUtil.defaultFieldValue(JsonUtil.stringToJsonElement(json), "FILE"+i));
+			 if(!nvRestFile.getFILE_ID().equals("")) {	// 첨부파일 요청이 들어온 경우에만
+				 nvRestFile.setID(id);
+				 nvRestFile = restFileService.selectRestFile(nvRestFile);
+				 if(nvRestFile == null) { // FILE_ID가 존재하지 않으면
+					 return Constants.Result.NOFILE_DB; 
+				 }else { 
+					 if(!FileUtil.isFileExist(nvRestFile.getFILE_PATH())) { // FILE_PATH가 존재하지 않으면
+						 return Constants.Result.NOFILE_PATH; 
+					 }else {
+						 nvrealtimeaccept.setFILE_PATH(i, nvRestFile.getFILE_PATH());
+					 }
+				 }
+			 }
+		}
+		return Constants.Result.SUCCESS;
+		
 	}
+	
+	
 }

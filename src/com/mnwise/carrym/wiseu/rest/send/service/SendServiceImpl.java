@@ -19,7 +19,6 @@ public class SendServiceImpl implements SendService {
 
 	@Override
 	public void insertNvrealtimeAccept(NvRealtimeAccept nvrealtimeaccept) {
-		logger.info("SERVICE");
 		sendDao.insertNvrealtimeAccept(nvrealtimeaccept);
 	}
 

@@ -24,6 +24,11 @@ public class RequestParamUtil {
 	    return nvrealtimeAccept;
 	}
 	
+	/**
+	 * request -> String 
+	 * @param request
+	 * @return
+	 */
 	public static String getJsonString(HttpServletRequest request) {
 		StringBuffer json = new StringBuffer();
 	    String line = null;
