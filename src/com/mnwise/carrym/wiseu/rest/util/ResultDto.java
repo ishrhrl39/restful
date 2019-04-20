@@ -20,13 +20,33 @@ public class ResultDto{
 	}
 
 	public static ModelAndView getMessage(String resultCode) {
-		logger.info("messageSourceAccessor => " + messageSourceAccessor);
-		
 		ModelAndView mav = new ModelAndView();
-		
 		Map returnData = new HashMap();
 		returnData.put("result", resultCode);
 		returnData.put("message", messageSourceAccessor.getMessage("result.message." + resultCode));
+		
+		mav.addAllObjects(returnData);
+		mav.setViewName("jsonView");
+		return mav;
+	}
+	
+	public static ModelAndView getMessage(String resultCode, String key, String value) {
+		ModelAndView mav = new ModelAndView();
+		Map returnData = new HashMap();
+		returnData.put("result", resultCode);
+		returnData.put(key, value);
+		returnData.put("message", messageSourceAccessor.getMessage("result.message." + resultCode));
+		
+		mav.addAllObjects(returnData);
+		mav.setViewName("jsonView");
+		return mav;
+	}
+
+	public static ModelAndView getMessage(String resultCode, String ...obj) {
+		ModelAndView mav = new ModelAndView();
+		Map returnData = new HashMap();
+		returnData.put("result", resultCode);
+		returnData.put("message", messageSourceAccessor.getMessage("result.message." + resultCode, obj));
 		
 		mav.addAllObjects(returnData);
 		mav.setViewName("jsonView");

@@ -5,7 +5,74 @@
 	<typeAlias alias="NvRealtimeAccept" type="com.mnwise.carrym.wiseu.rest.send.model.NvRealtimeAccept"/>
 
 	<insert id="insertNvrealtimeAccept" parameterClass="NvRealtimeAccept">
-	
+		INSERT INTO
+			NVREALTIMEACCEPT
+		(
+			SEQ
+			,ECARE_NO
+			,RESULT_SEQ
+			,CHANNEL
+			,REQ_USER_ID
+			,REQ_DT
+			,REQ_TM
+			,TMPL_TYPE
+			,RECEIVER_ID
+			,RECEIVER_NM
+			,RECEIVER
+			,SENDER_NM
+			,SENDER
+			,SUBJECT
+			,SEND_FG
+			,SECU_KEY
+			,PREVIEW_TYPE
+			,DATA_CNT
+			,FILE_PATH1
+			,FILE_PATH2
+			,FILE_PATH3
+			,JONMUN
+		)
+		VALUES
+		(
+			#SEQ#
+			,(SELECT ECARE_NO FROM NVRESTECAREMAP WHERE CHANNEL_TYPE=#CHANNEL#)
+			,0
+			<isEqual property="CHANNEL" compareValue="M">
+				,'M'
+			</isEqual>
+			<isEqual property="CHANNEL" compareValue="SM">
+				,'M'
+			</isEqual>
+			,#REQ_USER_ID#
+			,DATE_FORMAT(NOW(), '%Y%m%d')
+			,DATE_FORMAT(NOW(), '%H%i%s')
+			,'T'
+			,#SEQ#
+			,#RECEIVER_NM#
+			,#RECEIVER#
+			,#SENDER_NM#
+			,#SENDER#
+			,#SUBJECT#
+			,'R'
+			,#SECU_KEY#
+			,'N'
+			,#DATA_CNT#
+			,#FILE_PATH1#
+			,#FILE_PATH2#
+			,#FILE_PATH3#
+			,#JONMUN#
+		)
 	</insert>
+	
+	
+	<select id="selectNvrealtimeacceptCount" resultClass="int"  parameterClass="NvRealtimeAccept">
+		SELECT
+			COUNT(*) AS CNT
+		FROM
+			NVREALTIMEACCEPT
+		WHERE
+			REQ_USER_ID = #REQ_USER_ID#
+			AND SEQ = #SEQ#
+	</select>
+	
 	
 </sqlMap>

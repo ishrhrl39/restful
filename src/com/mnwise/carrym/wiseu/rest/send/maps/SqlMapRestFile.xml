@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="SqlMapRestFile">
+	
+	<typeAlias alias="NvRestFile" type="com.mnwise.carrym.wiseu.rest.send.model.NvRestFile"/>
+
+	<select id="selectRestFile" parameterClass="NvRestFile" resultClass="NvRestFile" >
+		SELECT 
+			ID
+			,FILE_ID
+			,FILE_NM
+			,FILE_PATH
+			,REG_DTM
+		FROM
+			NVRESTFILE
+		WHERE
+			ID = #ID#
+			<isNotNull property="FILE_ID">
+				AND FILE_ID = #FILE_ID#
+			</isNotNull>
+		LIMIT 1
+	</select>
+	
+	<select id="selectRestFileList" parameterClass="java.lang.String" resultClass="NvRestFile" >
+		SELECT 
+			ID
+			,FILE_ID
+			,FILE_NM
+			,FILE_PATH
+			,REG_DTM
+		FROM
+			NVRESTFILE
+		WHERE
+			ID = #ID#
+	</select>
+	
+	
+	<insert id="insertRestFile" parameterClass="NvRestFile">
+		INSERT INTO
+			NVRESTFILE
+		(
+			ID
+			,FILE_ID
+			,FILE_NM
+			,FILE_PATH
+			,REG_DTM
+		)
+		VALUES
+		(
+			#ID#
+			,#FILE_ID#
+			,#FILE_NM#
+			,#FILE_PATH#
+			,#REG_DTM#
+		)
+	</insert>
+	
+	<insert id="deleteRestFile" parameterClass="NvRestFile">
+		DELETE FROM
+			NVRESTFILE
+		WHERE
+			ID = #ID#
+			<isNotEqual property="FILE_ID">
+				AND FILE_ID = #FILE_ID#
+			</isNotEqual>
+	</insert>
+</sqlMap>

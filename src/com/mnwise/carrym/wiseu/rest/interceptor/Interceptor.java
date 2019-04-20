@@ -55,7 +55,6 @@ public class Interceptor extends HandlerInterceptorAdapter{
 		
 		nvRestUser = restUserService.selectRestUser(nvRestUser);
 		
-		
 		if(nvRestUser == null) {
 			Gson gson = new Gson();
 			JsonObject object = new JsonObject();
