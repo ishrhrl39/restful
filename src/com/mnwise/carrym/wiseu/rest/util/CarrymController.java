@@ -9,9 +9,7 @@ public class CarrymController {
 		
 	}
 	
-	
-	
-	private static Map checkVo(Object object, String ... columnList) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
+	protected Map isVoColumnVal(Object object, String ... columnList) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
 		Map returnData = new HashMap();
 		for(String columnNm : columnList) {
 			Field field = object.getClass().getDeclaredField(columnNm);

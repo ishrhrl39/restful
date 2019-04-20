@@ -24,6 +24,7 @@ public class RequestParamUtil {
 	public static NvRealtimeAccept requestToVo(HttpServletRequest request) {
 		StringBuffer json = new StringBuffer();
 	    String line = null;
+	    
 	    Gson gson = new Gson();
 	 
 	    try {

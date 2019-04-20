@@ -37,11 +37,16 @@ public class MailController extends CarrymController{
 	
 	@RequestMapping("/mail")
 	public ModelAndView send(HttpServletRequest request) throws Exception {
-		
 		logger.info("send mail start()");
 		NvRestUser userVo = (NvRestUser)request.getAttribute("userVo");
-		
 		NvRealtimeAccept nvrealtimeaccept = RequestParamUtil.requestToVo(request);
+		Map result = isVoColumnVal(nvrealtimeaccept, "SEQ", "RECEIVER_NM", "RECEIVER", "SENDER_NM", "SENDER", "SUBJECT");
+		boolean isColumnVal = Boolean.parseBoolean(result.get("result").toString());
+		logger.info("accept column valid check = " + isColumnVal);
+		if(!isColumnVal){
+			return ResultDto.getMessage(Constants.Result.NO_VALUE, result.get("columnNm").toString());
+		}
+			
 		logger.info(nvrealtimeaccept.getCHANNEL());
 //		sendService.insertNvrealtimeAccept(nvrealtimeaccept);
 		
