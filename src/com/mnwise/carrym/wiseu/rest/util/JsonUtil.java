@@ -25,7 +25,8 @@ public class JsonUtil {
 		if(obj == null) {
 			return "";
 		}else {
-			return obj.toString().trim();
+//			return obj.toString().trim();
+			return ((JsonElement)obj).getAsString().trim();
 		}
 	}
 }
