@@ -57,8 +57,7 @@ public class KakaoController extends CarrymController{
 		String message = JsonUtil.defaultFieldValue(el, "MESSAGE");	// MESSAGE FIELD
 		String tmplCd = JsonUtil.defaultFieldValue(el, "TMPL_CD");	// TMPL_CD
 		String smsSndYn = JsonUtil.defaultFieldValue(el, "SMS_SND_YN");	// SMS_SND_YN
-		String subject = JsonUtil.defaultFieldValue(el, "SUBJECT");	// SUBJECT
-		String button = JsonUtil.defaultFieldValue(el, "BUTTON");	// BUTTON
+		String button = JsonUtil.defaultFieldJsonValue(el, "BUTTON");	// BUTTON
 		String smsSndMsg = JsonUtil.defaultFieldValue(el, "SMS_SND_MSG");	// SMS_SND_MSG
 		
 		if(StringUtil.isEmpty(message))	// message is empty
@@ -68,8 +67,8 @@ public class KakaoController extends CarrymController{
 		
 		jsonObject.addProperty("MESSAGE", message);	// JONMUN add message
 		jsonObject.addProperty("TMPL_CD", tmplCd);	// JONMUN add tmplCd
-		jsonObject.addProperty("SMS_SND_YN", smsSndYn);	// JONMUN add smsSndYn
-		jsonObject.addProperty("SUBJECT", subject);	// JONMUN add subject
+		jsonObject.addProperty("SMS_SND_YN", smsSndYn.equals("") ? "N" : smsSndYn);	// JONMUN add smsSndYn
+//		jsonObject.addProperty("SUBJECT", subject);	// JONMUN add subject
 		jsonObject.addProperty("BUTTON", button);	// JONMUN add button
 		jsonObject.addProperty("SMS_SND_MSG", smsSndMsg);	// JONMUN add smsSndMsg
 			
@@ -111,9 +110,9 @@ public class KakaoController extends CarrymController{
 		String message = JsonUtil.defaultFieldValue(el, "MESSAGE");	// MESSAGE FIELD
 		String tmplCd = JsonUtil.defaultFieldValue(el, "TMPL_CD");	// TMPL_CD
 		String smsSndYn = JsonUtil.defaultFieldValue(el, "SMS_SND_YN");	// SMS_SND_YN
-		String subject = JsonUtil.defaultFieldValue(el, "SUBJECT");	// SUBJECT
-		String button = JsonUtil.defaultFieldValue(el, "BUTTON");	// BUTTON
+		String button = JsonUtil.defaultFieldJsonValue(el, "BUTTON");	// BUTTON
 		String smsSndMsg = JsonUtil.defaultFieldValue(el, "SMS_SND_MSG");	// SMS_SND_MSG
+		String adFlag = JsonUtil.defaultFieldValue(el, "AD_FLAG");
 		
 		if(StringUtil.isEmpty(message))	// message is empty
 			return ResultDto.getMessage(Constants.Result.NO_VALUE, "MESSAGE");
@@ -123,11 +122,11 @@ public class KakaoController extends CarrymController{
 		jsonObject.addProperty("MESSAGE", message);	// JONMUN add message
 		jsonObject.addProperty("TMPL_CD", tmplCd);	// JONMUN add tmplCd
 		jsonObject.addProperty("SMS_SND_YN", smsSndYn);	// JONMUN add smsSndYn
-		jsonObject.addProperty("SUBJECT", subject);	// JONMUN add subject
 		jsonObject.addProperty("BUTTON", button);	// JONMUN add button
 		jsonObject.addProperty("SMS_SND_MSG", smsSndMsg);	// JONMUN add smsSndMsg
 		jsonObject.addProperty("IMG_URL", JsonUtil.defaultFieldValue(el, "IMG_URL"));	// JONMUN add imgUrl
 		jsonObject.addProperty("IMG_LINK", JsonUtil.defaultFieldValue(el, "IMG_LINK"));	// JONMUN add imgLink
+		jsonObject.addProperty("AD_FLAG", adFlag.equals("") ? "N" : adFlag);	// JONMUN add adFlag
 			
 		NvRealtimeAccept nvrealtimeaccept = RequestParamUtil.jsonToNvrealtimeacceptVo(json);
 		nvrealtimeaccept.setREQ_USER_ID(userVo.getID());

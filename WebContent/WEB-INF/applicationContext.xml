@@ -13,22 +13,14 @@
 		<mvc:interceptor>
 			<mvc:mapping path="/**" />
 			<bean id="interceptor" class="com.mnwise.carrym.wiseu.rest.interceptor.Interceptor">
+				<property name="contractService" ref="contractService" />
 				<property name="restUserService" ref="restUserService" />
 				<property name="messageSourceAccessor" ref="messageSourceAccessor" />
 			</bean>
 		</mvc:interceptor>
 	</mvc:interceptors>
 	
-	<bean id="restUserService" class="com.mnwise.carrym.wiseu.rest.send.service.RestUserServiceImpl">
-		<property name="restUserDao" ref="restUserDao" />
-	</bean>
 	
-	<bean id="restUserDao" class="com.mnwise.carrym.wiseu.rest.send.dao.RestUserDaoImpl">
-		<constructor-arg>
-			<ref bean="sqlMapClient"/>
-		</constructor-arg>
-	</bean>
-
 	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 	    <property name="location" value="/WEB-INF/conf/jdbc.properties"/>
         <property name="fileEncoding" value="UTF-8" />
@@ -74,5 +66,27 @@
 	
 	<bean id="resultDto" class="com.mnwise.carrym.wiseu.rest.util.ResultDto">
 		<property name="messageSourceAccessor" ref="messageSourceAccessor"/>
+	</bean>
+	
+	<!-- Service, Dao -->
+	<bean id="restUserService" class="com.mnwise.carrym.wiseu.rest.send.service.RestUserServiceImpl">
+		<property name="restUserDao" ref="restUserDao" />
+	</bean>
+	
+	<bean id="restUserDao" class="com.mnwise.carrym.wiseu.rest.send.dao.RestUserDaoImpl">
+		<constructor-arg>
+			<ref bean="sqlMapClient"/>
+		</constructor-arg>
+	</bean>
+	
+	
+	<bean id="contractService" class="com.mnwise.carrym.wiseu.rest.send.service.ContractServiceImpl">
+		<property name="contractDao" ref="contractDao" />
+	</bean>
+	
+	<bean id="contractDao" class="com.mnwise.carrym.wiseu.rest.send.dao.ContractDaoImpl">
+		<constructor-arg>
+			<ref bean="sqlMapClient"/>
+		</constructor-arg>
 	</bean>
 </beans>

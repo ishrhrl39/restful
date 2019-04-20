@@ -15,10 +15,10 @@ public class NvRealtimeAccept {
 	private String REQ_TM;
 	private String TMPL_TYPE;
 	private String RECEIVER_ID;
-	private String RECEIVER_NM;
+	private String RECEIVER_NM = "";
 	private String RECEIVER;
-	private String SENDER_NM;
-	private String SENDER;
+	private String SENDER_NM = "";
+	private String SENDER = "";
 	private String SUBJECT;
 	private String SEND_FG;
 	private String SLOT1;

@@ -29,4 +29,20 @@ public class JsonUtil {
 			return ((JsonElement)obj).getAsString().trim();
 		}
 	}
+	
+	
+	/**
+	 * 필드값에 대하여 JSON형태로 반환한다.
+	 * @param element
+	 * @param columnNm
+	 * @return
+	 */
+	public static String defaultFieldJsonValue(JsonElement element, String columnNm) {
+		Object obj = element.getAsJsonObject().get(columnNm);
+		if(obj == null) {
+			return "";
+		}else {
+			return obj.toString().trim();
+		}
+	}
 }

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="SqlMapContract">
+	
+	<typeAlias alias="NvContract" type="com.mnwise.carrym.wiseu.rest.send.model.NvContract"/>
+
+	<select id="selectContract" parameterClass="NvContract" resultClass="NvContract" >
+		SELECT 
+			ID
+			,CHANNEL
+			,USE_YN
+		FROM
+			NVCONTRACT
+		WHERE
+			ID = #ID#
+			AND CHANNEL = #CHANNEL#
+	</select>
+	
+</sqlMap>
