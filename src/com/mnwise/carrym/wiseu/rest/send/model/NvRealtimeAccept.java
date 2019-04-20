@@ -1,5 +1,7 @@
 package com.mnwise.carrym.wiseu.rest.send.model;
 
+import java.lang.reflect.Field;
+
 public class NvRealtimeAccept {
 	private String SEQ;
 	private int ECARE_NO;
@@ -32,6 +34,8 @@ public class NvRealtimeAccept {
 	private String FILE_PATH3;
 	private String SRFIDD;
 	private String JONMUN;
+	
+	
 	public String getSEQ() {
 		return SEQ;
 	}
@@ -217,6 +221,35 @@ public class NvRealtimeAccept {
 	}
 	public void setJONMUN(String jONMUN) {
 		JONMUN = jONMUN;
+	}
+
+	/**
+	 * 파일 각 인덱스마다 파일경로를 삽입
+	 * @param index
+	 * @param file_PATH
+	 */
+	public void setFILE_PATH(int index, String filePath) {
+		try {
+			Field f = this.getClass().getDeclaredField("FILE_PATH" + index);
+			f.setAccessible(true);
+			f.set(this, filePath);
+		} catch (NoSuchFieldException | SecurityException e) {
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void main(String[] args) {
+		NvRealtimeAccept accept = new NvRealtimeAccept(); 
+		for(int i=1; i<=3; i++) {
+			accept.setFILE_PATH(i, "test" + i);
+		}
+		System.out.println(accept.getFILE_PATH1());
+		System.out.println(accept.getFILE_PATH2());
+		System.out.println(accept.getFILE_PATH3());
 	}
 	
 }
