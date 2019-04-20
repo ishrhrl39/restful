@@ -6,5 +6,6 @@
 	<settings useStatementNamespaces="true"  />
 	<sqlMap resource="com/mnwise/carrym/wiseu/rest/send/maps/SqlMapSend.xml" />
 	<sqlMap resource="com/mnwise/carrym/wiseu/rest/send/maps/SqlMapRestUser.xml" />
+	<sqlMap resource="com/mnwise/carrym/wiseu/rest/send/maps/SqlMapRestFile.xml" />
 </sqlMapConfig>
 
