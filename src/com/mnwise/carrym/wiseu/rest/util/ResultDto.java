@@ -29,7 +29,7 @@ public class ResultDto{
 		mav.setViewName("jsonView");
 		return mav;
 	}
-	
+
 	public static ModelAndView getMessage(String resultCode, String key, String value) {
 		ModelAndView mav = new ModelAndView();
 		Map returnData = new HashMap();
